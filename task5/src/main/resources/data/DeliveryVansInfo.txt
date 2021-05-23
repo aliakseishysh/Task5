@@ -1,0 +1,4 @@
+{"products":[{"productName":"Orange","shelfLifeType":"PERISHABLE"},{"productName":"Apple","shelfLifeType":"PERISHABLE"}]}
+{"products":[{"productName":"Chair","shelfLifeType":"NOT_PERISHABLE"}]}
+{"products":[]}
+{"products":[{"productName":"Cola","shelfLifeType":"NOT_PERISHABLE"}]}
