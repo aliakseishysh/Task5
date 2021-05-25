@@ -2,11 +2,11 @@ package by.shyshaliaksey.task5.entity;
 
 import org.testng.annotations.Test;
 
-public class LogisticsBaseSingletonTest {
+public class LogisticsBaseTest {
 
 	@Test
 	public void readPropertiesTest() {
-		LogisticsBaseSingleton base = LogisticsBaseSingleton.getInstance();
+		LogisticsBase base = LogisticsBase.getInstance();
 		System.out.println(base.getCurrentContainerCount());
 	}
 	

@@ -26,18 +26,12 @@ public class SerializeJsonTest {
 
 	@Test
 	public void serializeTest() throws JsonGenerationException, JsonMappingException, IOException {
-		Product product1 = new Product("Orange", ShelfLifeType.PERISHABLE);
-		Product product2 = new Product("Apple", ShelfLifeType.PERISHABLE);
-		List<Product> products = new ArrayList<>();
-		products.add(product1);
-		products.add(product2);
-		DeliveryVan van1 = new DeliveryVan(products);
-		
+		DeliveryVan van = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
 		StringWriter writer = new StringWriter();
 		ObjectMapper mapper = new ObjectMapper();
-		mapper.writeValue(writer, van1);
+		mapper.writeValue(writer, van);
 		String actual = writer.toString();
-		String expected = "{\"products\":[{\"productName\":\"Orange\",\"shelfLifeType\":\"PERISHABLE\"},{\"productName\":\"Apple\",\"shelfLifeType\":\"PERISHABLE\"}]}";
+		String expected = "{\"containerCount\":2,\"containsPerishableProduct\":\"PERISHABLE\"}";
 		Assert.assertEquals(actual, expected);
 	}
 	
@@ -52,31 +46,18 @@ public class SerializeJsonTest {
 				.collect(Collectors.toList());
 		
 		List<DeliveryVan> expected = new ArrayList<>();
-		
-		Product product1 = new Product("Orange", ShelfLifeType.PERISHABLE);
-		Product product2 = new Product("Apple", ShelfLifeType.PERISHABLE);
-		List<Product> products = new ArrayList<>();
-		products.add(product1);
-		products.add(product2);
-		DeliveryVan van = new DeliveryVan(products);
-		expected.add(van);
-		
-		product1 = new Product("Chair", ShelfLifeType.NOT_PERISHABLE);
-		products = new ArrayList<>();
-		products.add(product1);
-		van = new DeliveryVan(products);
-		expected.add(van);
-		
-		products = new ArrayList<>();
-		van = new DeliveryVan(products);
-		expected.add(van);
-		
-		products = new ArrayList<>();
-		product1 = new Product("Cola", ShelfLifeType.NOT_PERISHABLE);
-		products.add(product1);
-		van = new DeliveryVan(products);
-		expected.add(van);
-		
+		DeliveryVan van1 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
+		DeliveryVan van2 = new DeliveryVan(3, ShelfLifeType.NOT_PERISHABLE);
+		DeliveryVan van3 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
+		DeliveryVan van4 = new DeliveryVan(0, ShelfLifeType.NOT_PERISHABLE);
+		DeliveryVan van5 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
+		DeliveryVan van6 = new DeliveryVan(0, ShelfLifeType.NOT_PERISHABLE);
+		expected.add(van1);
+		expected.add(van2);
+		expected.add(van3);
+		expected.add(van4);
+		expected.add(van5);
+		expected.add(van6);
 		Assert.assertEquals(actual, expected);
 	}
 	
