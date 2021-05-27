@@ -51,7 +51,7 @@ public class LogisticsBase {
 		return currentContainerCount;
 	}
 	
-	public void handle() throws InterruptedException {
+	public void handle() {
 		ExecutorService executorService = Executors.newFixedThreadPool(TERMINAL_COUNT);
 		List<Future<DeliveryVan>> futures = new ArrayList<>(TERMINAL_COUNT);
 		while(!vansInQueue.isEmpty()) {
@@ -66,7 +66,14 @@ public class LogisticsBase {
 			}
 		}
 		executorService.shutdown();
-		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+		try {
+			executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
+			logger.log(Level.INFO, "All vans were handled");
+		} catch (InterruptedException e) {
+			logger.log(Level.INFO, "Current thread was terminated: {}", e.getMessage());
+			Thread.currentThread().interrupt();
+		}
+		
 	}
 	
 	private void removeDoneFutures(List<Future<DeliveryVan>> futures) {
