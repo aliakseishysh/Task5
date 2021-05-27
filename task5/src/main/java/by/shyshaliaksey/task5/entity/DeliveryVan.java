@@ -7,53 +7,82 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class DeliveryVan implements Callable {
+
+public class DeliveryVan implements Callable<DeliveryVan> {
 
 	private static Logger logger = LogManager.getRootLogger();
-	private int containerCount;
+//	private DeliveryVanState deliveryVanState;
+	private int id;
+	private int containersInVan;
+	private int containersToLoad;
+	private int containersToUnload;
 	private ShelfLifeType containsPerishableProduct;
 	
 	public DeliveryVan() {
+//		this.setDeliveryVanState();
 	}
 	
-	public DeliveryVan(int containerCount, ShelfLifeType containsPerishableProduct) {
-		this.setContainerCount(containerCount);
+	public DeliveryVan(int id, int containersInVan, int containersToLoad, int containersToUnload, ShelfLifeType containsPerishableProduct) {
+		this.setId(id);
+		this.setContainersInVan(containersInVan);
+		this.setContainersToLoad(containersToLoad);
+		this.setContainersToUnload(containersToUnload);
 		this.setContainsPerishableProduct(containsPerishableProduct);
 	}
+	
+//	public DeliveryVanState getDeliveryVanState() {
+//		return deliveryVanState;
+//	}
+//
+//	public void setDeliveryVanState(DeliveryVanState deliveryVanState) {
+//		this.deliveryVanState = deliveryVanState;
+//	}
 
-	public int getContainerCount() {
-		return containerCount;
+	public int getContainersInVan() {
+		return containersInVan;
 	}
 
-	public void setContainerCount(int containerCount) {
-		this.containerCount = containerCount;
+	public void setContainersInVan(int containersInVan) {
+		this.containersInVan = containersInVan;
+	}
+
+	public int getContainersToLoad() {
+		return containersToLoad;
+	}
+
+	public void setContainersToLoad(int containersToLoad) {
+		this.containersToLoad = containersToLoad;
+	}
+
+	public int getContainersToUnload() {
+		return containersToUnload;
+	}
+
+	public void setContainersToUnload(int containersToUnload) {
+		this.containersToUnload = containersToUnload;
 	}
 
 	public ShelfLifeType getContainsPerishableProduct() {
 		return containsPerishableProduct;
 	}
 
-	public void setContainsPerishableProduct(ShelfLifeType containsPerishableProduct) {
-		this.containsPerishableProduct = containsPerishableProduct;
+	public int getId() {
+		return id;
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("DeliveryVan [containerCount=");
-		builder.append(containerCount);
-		builder.append(", containsPerishableProduct=");
-		builder.append(containsPerishableProduct);
-		builder.append("]");
-		return builder.toString();
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + containerCount;
+		result = prime * result + containersInVan;
+		result = prime * result + containersToLoad;
+		result = prime * result + containersToUnload;
 		result = prime * result + ((containsPerishableProduct == null) ? 0 : containsPerishableProduct.hashCode());
+		result = prime * result + id;
 		return result;
 	}
 
@@ -62,37 +91,84 @@ public class DeliveryVan implements Callable {
 		if (this == obj) {
 			return true;
 		}
-		if (obj == null || getClass() != obj.getClass()) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
 		}
 		DeliveryVan other = (DeliveryVan) obj;
-		if (containerCount != other.containerCount 
-				|| containsPerishableProduct != other.containsPerishableProduct) {
+		if (containersInVan != other.containersInVan) {
+			return false;
+		}
+		if (containersToLoad != other.containersToLoad) {
+			return false;
+		}
+		if (containersToUnload != other.containersToUnload) {
+			return false;
+		}
+		if (containsPerishableProduct != other.containsPerishableProduct) {
+			return false;
+		}
+		if (id != other.id) {
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public Object call() throws InterruptedException {
-//		LogisticsBase instance = LogisticsBase.getInstance();
-//		Optional<Terminal> terminalOptional;
-//		while(true) {
-//			terminalOptional = instance.getFreeTerminal();
-//			if (!terminalOptional.isEmpty()) {
-//				break;
-//			}
-//			TimeUnit.SECONDS.sleep(5);
-//		}
-		logger.log(Level.DEBUG, "Handling: {}", this);
-		LogisticsBase.setCurrentContainerCount(LogisticsBase.getCurrentContainerCount() + this.getContainerCount());
-		setContainerCount(0);
-		setContainsPerishableProduct(ShelfLifeType.NOT_PERISHABLE);
-		TimeUnit.SECONDS.sleep(3);
-		logger.log(Level.DEBUG, "Handling completed: {}", this);
-		
-		return "Thread finished: " + this.toString();
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("DeliveryVan [id=");
+		builder.append(id);
+		builder.append(", containersInVan=");
+		builder.append(containersInVan);
+		builder.append(", containersToLoad=");
+		builder.append(containersToLoad);
+		builder.append(", containersToUnload=");
+		builder.append(containersToUnload);
+		builder.append(", containsPerishableProduct=");
+		builder.append(containsPerishableProduct);
+		builder.append("]");
+		return builder.toString();
 	}
+
+	public void setContainsPerishableProduct(ShelfLifeType containsPerishableProduct) {
+		this.containsPerishableProduct = containsPerishableProduct;
+	}
+	
+	@Override
+	public DeliveryVan call() throws InterruptedException {
+		int timeToUnloadContainer = 2;
+		int timeToLoadContainer = 1;
+		logger.log(Level.DEBUG, "Start unloading from DeliveryVan №{}: containers №{}", 
+				this.id, this.containersToUnload);
+		// unload containers
+		while (this.containersToUnload > 0) {
+			TimeUnit.SECONDS.sleep(timeToUnloadContainer);
+			this.containersToUnload--;
+			this.containersInVan--;
+			LogisticsBase.changeCurrentContainerCount(1);
+			logger.log(Level.DEBUG, "Container unloaded from DeliveryVan №{}", this.id);
+		}
+		logger.log(Level.DEBUG, "Containers unloaded from DeliveryVan №{}", this.id);
+		
+		// load containers
+		logger.log(Level.DEBUG, "Start loading to DeliveryVan №{}: containers №{}", 
+				this.id, this.containersToLoad);
+		while (this.containersToLoad > 0) {
+			TimeUnit.SECONDS.sleep(timeToLoadContainer);
+			this.containersToLoad--;
+			this.containersInVan++;
+			LogisticsBase.changeCurrentContainerCount(-1);
+			logger.log(Level.DEBUG, "Container loaded to DeliveryVan №{}", this.id);
+		}
+		logger.log(Level.DEBUG, "Containers loaded to DeliveryVan №{}", this.id);
+		
+		return this;
+	}
+
+
 
 
 

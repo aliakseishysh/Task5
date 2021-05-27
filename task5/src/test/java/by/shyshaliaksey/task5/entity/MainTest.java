@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import by.shyshaliaksey.task5.exception.MultithreadingTaskException;
@@ -24,12 +25,39 @@ public class MainTest {
 		List<DeliveryVan> vans = content.stream()
 				.map(DeliveryVanFactory::createInstance)
 				.collect(Collectors.toList());
-		LogisticsBase base = LogisticsBase.getInstance();
-		for(DeliveryVan van : vans) {
-			base.addVanToQueue(van);
+		int expected = LogisticsBase.getCurrentContainerCount();
+		for (DeliveryVan van: vans) {
+			expected += van.getContainersToUnload();
+			expected -= van.getContainersToLoad();
 		}
+		LogisticsBase base = LogisticsBase.getInstance();
+		base.addAllVansToQueue(vans);
 		base.handle();
-		System.out.println("Container Count: " + LogisticsBase.getCurrentContainerCount());
+		int actual = LogisticsBase.getCurrentContainerCount();
+		Assert.assertEquals(actual, expected);
+	}
+	
+	@Test
+	public void testSublistFrom0To6() throws URISyntaxException, MultithreadingTaskException, InterruptedException {
+		URI uri = getClass().getResource("/data/DeliveryVansInfo.txt").toURI();
+		String absolutePath = new File(uri).getAbsolutePath();
+		TextReader reader = new TextReaderImpl();
+		List<String> content = reader.readAllLines(absolutePath);
+		List<DeliveryVan> vans = content.stream()
+				.map(DeliveryVanFactory::createInstance)
+				.collect(Collectors.toList());
+		vans = vans.subList(0, 6);
+		int expected = LogisticsBase.getCurrentContainerCount();
+		for (DeliveryVan van: vans) {
+			System.out.println(van);
+			expected += van.getContainersToUnload();
+			expected -= van.getContainersToLoad();
+		}
+		LogisticsBase base = LogisticsBase.getInstance();
+		base.addAllVansToQueue(vans);
+		base.handle();
+		int actual = LogisticsBase.getCurrentContainerCount();
+		Assert.assertEquals(actual, expected);
 	}
 	
 }

@@ -26,12 +26,12 @@ public class SerializeJsonTest {
 
 	@Test
 	public void serializeTest() throws JsonGenerationException, JsonMappingException, IOException {
-		DeliveryVan van = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
+		DeliveryVan van = new DeliveryVan(1, 2, 1, 2, ShelfLifeType.PERISHABLE);
 		StringWriter writer = new StringWriter();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.writeValue(writer, van);
 		String actual = writer.toString();
-		String expected = "{\"containerCount\":2,\"containsPerishableProduct\":\"PERISHABLE\"}";
+		String expected = "{\"id\":1,\"containersInVan\":2,\"containersToLoad\":1,\"containersToUnload\":2,\"containsPerishableProduct\":\"PERISHABLE\"}";
 		Assert.assertEquals(actual, expected);
 	}
 	
@@ -44,14 +44,15 @@ public class SerializeJsonTest {
 		List<DeliveryVan> actual = content.stream()
 				.map(DeliveryVanFactory::createInstance)
 				.collect(Collectors.toList());
+		actual = actual.subList(0, 6);
 		
 		List<DeliveryVan> expected = new ArrayList<>();
-		DeliveryVan van1 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
-		DeliveryVan van2 = new DeliveryVan(3, ShelfLifeType.NOT_PERISHABLE);
-		DeliveryVan van3 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
-		DeliveryVan van4 = new DeliveryVan(0, ShelfLifeType.NOT_PERISHABLE);
-		DeliveryVan van5 = new DeliveryVan(2, ShelfLifeType.PERISHABLE);
-		DeliveryVan van6 = new DeliveryVan(0, ShelfLifeType.NOT_PERISHABLE);
+		DeliveryVan van1 = new DeliveryVan(1, 2, 1, 2, ShelfLifeType.PERISHABLE);
+		DeliveryVan van2 = new DeliveryVan(2, 3, 0, 2, ShelfLifeType.NOT_PERISHABLE);
+		DeliveryVan van3 = new DeliveryVan(3, 4, 2, 0, ShelfLifeType.PERISHABLE);
+		DeliveryVan van4 = new DeliveryVan(4, 5, 4, 5, ShelfLifeType.NOT_PERISHABLE);
+		DeliveryVan van5 = new DeliveryVan(5, 6, 1, 1, ShelfLifeType.PERISHABLE);
+		DeliveryVan van6 = new DeliveryVan(6, 0, 0, 0, ShelfLifeType.NOT_PERISHABLE);
 		expected.add(van1);
 		expected.add(van2);
 		expected.add(van3);
