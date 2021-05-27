@@ -17,13 +17,13 @@ import org.apache.logging.log4j.Logger;
 
 public class LogisticsBase {
 
-	private static final Logger logger = LogManager.getRootLogger();
 	public static final int MAX_CONTAINER_COUNT;
 	public static final int TERMINAL_COUNT;
+	private static final Logger logger = LogManager.getRootLogger();
 	private static final ReentrantLock reentrantLock = new ReentrantLock(true);
-	private static LogisticsBase instance;
+	private static final List<DeliveryVan> vansInQueue = new ArrayList<>();
 	private static int currentContainerCount;
-	private static List<DeliveryVan> vansInQueue = new ArrayList<>();
+	private static LogisticsBase instance;
 	
 	static {
 		try  {
@@ -66,7 +66,7 @@ public class LogisticsBase {
 			}
 		}
 		executorService.shutdown();
-		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+		executorService.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
 	}
 	
 	private void removeDoneFutures(List<Future<DeliveryVan>> futures) {
