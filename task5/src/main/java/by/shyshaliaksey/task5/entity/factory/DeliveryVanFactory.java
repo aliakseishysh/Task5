@@ -1,4 +1,4 @@
-package by.shyshaliaksey.task5.entity;
+package by.shyshaliaksey.task5.entity.factory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +10,8 @@ import org.apache.logging.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import by.shyshaliaksey.task5.entity.DeliveryVan;
 
 
 public class DeliveryVanFactory {

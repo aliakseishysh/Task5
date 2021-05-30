@@ -16,7 +16,11 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	private int containersToLoad;
 	private int containersToUnload;
 	private ShelfLifeType containsPerishableProduct;
+	private DeliveryVanState state;
+	
 
+	
+	
 	public DeliveryVan() {
 	}
 
@@ -27,6 +31,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 		this.setContainersToLoad(containersToLoad);
 		this.setContainersToUnload(containersToUnload);
 		this.setContainsPerishableProduct(containsPerishableProduct);
+		this.setState(DeliveryVanState.NEW);
 	}
 
 	public int getId() {
@@ -67,6 +72,14 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	
 	public void setContainsPerishableProduct(ShelfLifeType containsPerishableProduct) {
 		this.containsPerishableProduct = containsPerishableProduct;
+	}
+
+	public DeliveryVanState getState() {
+		return state;
+	}
+
+	public void setState(DeliveryVanState state) {
+		this.state = state;
 	}
 
 	@Override
@@ -117,6 +130,9 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 
 	@Override
 	public DeliveryVan call() throws InterruptedException {
+		this.setState(DeliveryVanState.PROCESSING);
+		LogisticsBase logisticsBase = LogisticsBase.getInstance();
+		Terminal terminal = logisticsBase.getFreeTerminal();
 		DeliveryVanHandleService handleService = new DeliveryVanHandleService();
 		if (this.containersToUnload > 0) {
 			handleService.unload(this);
@@ -128,6 +144,8 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 		} else {
 			logger.log(Level.DEBUG, "Nothing to load to DeliveryVan №{}", this.id);
 		}
+		logisticsBase.releaseOccupiedTerminal(terminal);
+		this.setState(DeliveryVanState.FINISHED);
 		return this;
 	}
 
