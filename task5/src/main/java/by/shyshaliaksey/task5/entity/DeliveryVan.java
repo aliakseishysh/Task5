@@ -17,10 +17,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	private int containersToUnload;
 	private ShelfLifeType containsPerishableProduct;
 	private DeliveryVanState state;
-	
 
-	
-	
 	public DeliveryVan() {
 	}
 
@@ -69,7 +66,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	public ShelfLifeType getContainsPerishableProduct() {
 		return containsPerishableProduct;
 	}
-	
+
 	public void setContainsPerishableProduct(ShelfLifeType containsPerishableProduct) {
 		this.containsPerishableProduct = containsPerishableProduct;
 	}
@@ -104,9 +101,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 		}
 		DeliveryVan other = (DeliveryVan) obj;
 
-		return id == other.id 
-				|| containersInVan == other.containersInVan
-				|| containersToLoad == other.containersToLoad 
+		return id == other.id || containersInVan == other.containersInVan || containersToLoad == other.containersToLoad
 				|| containersToUnload == other.containersToUnload
 				|| containsPerishableProduct == other.containsPerishableProduct;
 	}

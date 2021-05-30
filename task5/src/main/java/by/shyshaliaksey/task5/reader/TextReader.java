@@ -25,13 +25,13 @@ import by.shyshaliaksey.task5.exception.MultithreadingTaskException;
 public class TextReader {
 
 	private static Logger rootLogger = LogManager.getLogger();
-	
+
 	/**
 	 * Method to read all lines in the file WITHOUT ANY VALIDATION
 	 * 
 	 * @param path to file
 	 * @return List<String> with all lines in the file
-	 * @throws MultithreadingTaskException 
+	 * @throws MultithreadingTaskException
 	 */
 	public List<String> readAllLines(String relativePath) throws MultithreadingTaskException {
 		URI uri;
@@ -52,8 +52,5 @@ public class TextReader {
 		}
 		return arrayList;
 	}
-
-	
-
 
 }

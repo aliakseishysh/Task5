@@ -13,14 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.shyshaliaksey.task5.entity.DeliveryVan;
 
-
 public class DeliveryVanFactory {
 
 	private static Logger logger = LogManager.getRootLogger();
-	
+
 	private DeliveryVanFactory() {
 	}
-	
+
 	public static DeliveryVan createInstance(String jsonObject) {
 		ObjectMapper mapper = new ObjectMapper();
 		DeliveryVan deliveryVan = null;
@@ -29,15 +28,12 @@ public class DeliveryVanFactory {
 		} catch (JsonProcessingException e) {
 			// never happened due to task conditions
 			logger.log(Level.ERROR, "Corrupted string: {}", jsonObject);
-			// throw new MultithreadingTaskException("Corrupted string: " + e.getMessage());
 		}
 		return deliveryVan;
 	}
-	
+
 	public static List<DeliveryVan> createInstance(String[] jsonObjects) {
-		return Stream.of(jsonObjects)
-				.map(DeliveryVanFactory::createInstance)
-				.collect(Collectors.toList());
+		return Stream.of(jsonObjects).map(DeliveryVanFactory::createInstance).collect(Collectors.toList());
 	}
-	
+
 }

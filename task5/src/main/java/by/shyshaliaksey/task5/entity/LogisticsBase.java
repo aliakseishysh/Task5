@@ -24,10 +24,9 @@ public class LogisticsBase {
 	private static final AtomicBoolean isBaseCreated = new AtomicBoolean(false);
 	private static int currentContainerCount;
 	private static LogisticsBase instance;
-	
-	
+
 	static {
-		try  {
+		try {
 			ResourceBundle resources = ResourceBundle.getBundle("\\data\\base");
 			MAX_CONTAINER_COUNT = Integer.parseInt(resources.getString("MAX_CONTAINER_COUNT"));
 			TERMINAL_COUNT = Integer.parseInt(resources.getString("TERMINAL_COUNT"));
@@ -40,34 +39,34 @@ public class LogisticsBase {
 			throw new ExceptionInInitializerError("MissingResourceException: " + e.getMessage());
 		}
 	}
-	
+
 	private LogisticsBase() {
 	}
-	
+
 	public static LogisticsBase getInstance() {
-		while(instance == null) {
+		while (instance == null) {
 			if (isBaseCreated.compareAndSet(false, true)) {
 				instance = new LogisticsBase();
 			}
 		}
 		return instance;
 	}
-	
+
 	public static int getCurrentContainerCount() {
 		return currentContainerCount;
 	}
-	
+
 	public Terminal getFreeTerminal() {
 		Terminal terminal;
-		while(true) {
+		while (true) {
 			freeTerminalsLock.lock();
 			try {
 				if (!freeTerminals.isEmpty()) {
-					terminal = freeTerminals.poll();	
+					terminal = freeTerminals.poll();
 					break;
 				}
 			} finally {
-				freeTerminalsLock.unlock();				
+				freeTerminalsLock.unlock();
 			}
 		}
 		occupiedTerminalsLock.lock();
@@ -78,7 +77,7 @@ public class LogisticsBase {
 		}
 		return terminal;
 	}
-	
+
 	public void releaseOccupiedTerminal(Terminal terminal) {
 		occupiedTerminalsLock.lock();
 		try {
@@ -93,7 +92,7 @@ public class LogisticsBase {
 			freeTerminalsLock.unlock();
 		}
 	}
-	
+
 	public static void changeCurrentContainerCount(int containersCount) {
 		containersLock.lock();
 		try {

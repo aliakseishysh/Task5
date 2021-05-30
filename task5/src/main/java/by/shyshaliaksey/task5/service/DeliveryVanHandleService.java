@@ -20,7 +20,6 @@ public class DeliveryVanHandleService {
 			try {
 				TimeUnit.SECONDS.sleep(ContainerTime.TO_UNLOAD.getValue());
 			} catch (InterruptedException e) {
-				// TODO do something with interrupted exception
 				Thread.currentThread().interrupt();
 			}
 			deliveryVan.setContainersToUnload(deliveryVan.getContainersToUnload() - 1);
@@ -38,7 +37,6 @@ public class DeliveryVanHandleService {
 			try {
 				TimeUnit.SECONDS.sleep(ContainerTime.TO_LOAD.getValue());
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				Thread.currentThread().interrupt();
 			}
 			deliveryVan.setContainersToLoad(deliveryVan.getContainersToLoad() - 1);
