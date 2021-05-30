@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import by.shyshaliaksey.task5.entity.DeliveryVan;
+import by.shyshaliaksey.task5.entity.DeliveryVanState;
 
 public class DeliveryVanFactory {
 
@@ -25,6 +26,7 @@ public class DeliveryVanFactory {
 		DeliveryVan deliveryVan = null;
 		try {
 			deliveryVan = mapper.readValue(jsonObject, DeliveryVan.class);
+			deliveryVan.setState(DeliveryVanState.NEW);
 		} catch (JsonProcessingException e) {
 			// never happened due to task conditions
 			logger.log(Level.ERROR, "Corrupted string: {}", jsonObject);

@@ -19,6 +19,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	private DeliveryVanState state;
 
 	public DeliveryVan() {
+		this.setState(DeliveryVanState.NEW);
 	}
 
 	public DeliveryVan(int id, int containersInVan, int containersToLoad, int containersToUnload,
@@ -126,6 +127,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 	@Override
 	public DeliveryVan call() throws InterruptedException {
 		this.setState(DeliveryVanState.PROCESSING);
+		this.state.printInfoMessage(this.id);
 		LogisticsBase logisticsBase = LogisticsBase.getInstance();
 		Terminal terminal = logisticsBase.getFreeTerminal();
 		DeliveryVanHandleService handleService = new DeliveryVanHandleService();
@@ -141,6 +143,7 @@ public class DeliveryVan implements Callable<DeliveryVan> {
 		}
 		logisticsBase.releaseOccupiedTerminal(terminal);
 		this.setState(DeliveryVanState.FINISHED);
+		this.state.printInfoMessage(this.id);
 		return this;
 	}
 

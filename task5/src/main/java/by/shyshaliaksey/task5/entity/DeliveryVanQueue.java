@@ -19,10 +19,11 @@ public final class DeliveryVanQueue {
 
 	public static void add(DeliveryVan deliveryVan) {
 		vansOutsideBase.add(deliveryVan);
+		deliveryVan.getState().printInfoMessage(deliveryVan.getId());
 	}
 
 	public static void addAll(Collection<DeliveryVan> collection) {
-		vansOutsideBase.addAll(collection);
+		collection.forEach(DeliveryVanQueue::add);
 	}
 
 	public static DeliveryVan pool() {
