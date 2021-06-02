@@ -7,11 +7,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import by.shyshaliaksey.task5.entity.DeliveryVan;
-import by.shyshaliaksey.task5.entity.LogisticsBase;
+import by.shyshaliaksey.task5.entity.LogisticsBaseSingleton;
 
 public class DeliveryVanHandleService {
 
-	private Logger logger = LogManager.getRootLogger();
+	private static final Logger logger = LogManager.getRootLogger();
 
 	public void unload(DeliveryVan deliveryVan) {
 		logger.log(Level.DEBUG, "Start unloading from DeliveryVan №{}: containers №{}", deliveryVan.getId(),
@@ -24,7 +24,8 @@ public class DeliveryVanHandleService {
 			}
 			deliveryVan.setContainersToUnload(deliveryVan.getContainersToUnload() - 1);
 			deliveryVan.setContainersInVan(deliveryVan.getContainersInVan() - 1);
-			LogisticsBase.changeCurrentContainerCount(1);
+			LogisticsBaseSingleton logisticsBaseSingleton = LogisticsBaseSingleton.getInstance();
+			logisticsBaseSingleton.addContainersInBase(1);
 			logger.log(Level.DEBUG, "Container unloaded from DeliveryVan №{}", deliveryVan.getId());
 		}
 		logger.log(Level.DEBUG, "Containers unloaded from DeliveryVan №{}", deliveryVan.getId());
@@ -41,7 +42,8 @@ public class DeliveryVanHandleService {
 			}
 			deliveryVan.setContainersToLoad(deliveryVan.getContainersToLoad() - 1);
 			deliveryVan.setContainersInVan(deliveryVan.getContainersInVan() + 1);
-			LogisticsBase.changeCurrentContainerCount(-1);
+			LogisticsBaseSingleton logisticsBaseSingleton = LogisticsBaseSingleton.getInstance();
+			logisticsBaseSingleton.addContainersInBase(-1);
 			logger.log(Level.DEBUG, "Container loaded to DeliveryVan №{}", deliveryVan.getId());
 		}
 		logger.log(Level.DEBUG, "Containers loaded to DeliveryVan №{}", deliveryVan.getId());

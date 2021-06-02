@@ -22,9 +22,9 @@ import by.shyshaliaksey.task5.exception.MultithreadingTaskException;
  * @author AlekseyShysh
  *
  */
-public class TextReader {
+public class DeliveryVansReader {
 
-	private static Logger rootLogger = LogManager.getLogger();
+	private static final Logger logger = LogManager.getLogger();
 
 	/**
 	 * Method to read all lines in the file WITHOUT ANY VALIDATION
@@ -36,9 +36,9 @@ public class TextReader {
 	public List<String> readAllLines(String relativePath) throws MultithreadingTaskException {
 		URI uri;
 		try {
-			uri = getClass().getResource("/data/DeliveryVansInfo.txt").toURI();
+			uri = getClass().getResource(relativePath).toURI();
 		} catch (URISyntaxException e) {
-			rootLogger.log(Level.ERROR, "URISyntaxException occured by path {}: {}", relativePath, e.getMessage());
+			logger.log(Level.ERROR, "URISyntaxException occured by path {}: {}", relativePath, e.getMessage());
 			throw new MultithreadingTaskException("URISyntaxException occured by path " + relativePath);
 		}
 		String absolutePath = new File(uri).getAbsolutePath();
@@ -47,7 +47,7 @@ public class TextReader {
 		try (Stream<String> stream = Files.lines(path)) {
 			arrayList = stream.collect(Collectors.toList());
 		} catch (IOException e) {
-			rootLogger.log(Level.ERROR, "Problem with file reading by path: \'{}\' occured", path);
+			logger.log(Level.ERROR, "Problem with file reading by path: \'{}\' occured", path);
 			throw new MultithreadingTaskException("Problem with file reading by path :" + path + " occured");
 		}
 		return arrayList;

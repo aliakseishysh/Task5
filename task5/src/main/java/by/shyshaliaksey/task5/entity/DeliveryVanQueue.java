@@ -1,36 +1,33 @@
 package by.shyshaliaksey.task5.entity;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import by.shyshaliaksey.task5.entity.comparator.DeliveryVanByTypeThenIdComparator;
+public class DeliveryVanQueue {
 
-public final class DeliveryVanQueue {
+	private Queue<DeliveryVan> vansOutsideBase;
 
-	private static final Queue<DeliveryVan> vansOutsideBase;
-
-	private DeliveryVanQueue() {
+	public DeliveryVanQueue(List<DeliveryVan> deliveryVans) {
+		vansOutsideBase = new PriorityQueue<>(new DeliveryVanQueueComparator());
+		vansOutsideBase.addAll(deliveryVans);
 	}
 
-	static {
-		vansOutsideBase = new PriorityQueue<>(new DeliveryVanByTypeThenIdComparator());
-	}
-
-	public static void add(DeliveryVan deliveryVan) {
+	public void add(DeliveryVan deliveryVan) {
 		vansOutsideBase.add(deliveryVan);
 		deliveryVan.getState().printInfoMessage(deliveryVan.getId());
 	}
 
-	public static void addAll(Collection<DeliveryVan> collection) {
-		collection.forEach(DeliveryVanQueue::add);
+	public void addAll(Collection<DeliveryVan> collection) {
+		collection.forEach(this::add);
 	}
 
-	public static DeliveryVan pool() {
+	public DeliveryVan pool() {
 		return vansOutsideBase.poll();
 	}
 
-	public static boolean isEmpty() {
+	public boolean isEmpty() {
 		return vansOutsideBase.isEmpty();
 	}
 

@@ -1,8 +1,7 @@
-package by.shyshaliaksey.task5.entity.factory;
+package by.shyshaliaksey.task5.entity;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -11,12 +10,9 @@ import org.apache.logging.log4j.Logger;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import by.shyshaliaksey.task5.entity.DeliveryVan;
-import by.shyshaliaksey.task5.entity.DeliveryVanState;
-
 public class DeliveryVanFactory {
 
-	private static Logger logger = LogManager.getRootLogger();
+	private static final Logger logger = LogManager.getRootLogger();
 
 	private DeliveryVanFactory() {
 	}
@@ -34,8 +30,8 @@ public class DeliveryVanFactory {
 		return deliveryVan;
 	}
 
-	public static List<DeliveryVan> createInstance(String[] jsonObjects) {
-		return Stream.of(jsonObjects).map(DeliveryVanFactory::createInstance).collect(Collectors.toList());
+	public static List<DeliveryVan> createInstance(List<String> jsonObjects) {
+		return jsonObjects.stream().map(DeliveryVanFactory::createInstance).collect(Collectors.toList());
 	}
 
 }
