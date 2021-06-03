@@ -6,6 +6,7 @@ import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.logging.log4j.Level;
@@ -25,6 +26,7 @@ public class LogisticsBaseSingleton {
 	private final int maxContainerCount;
 	private final int terminalCount;
 	private final ReentrantLock freeTerminalsLock = new ReentrantLock(true);
+	private final Condition freeTerminalsCondition = freeTerminalsLock.newCondition();
 	private final ReentrantLock occupiedTerminalsLock = new ReentrantLock(true);
 	private Queue<Terminal> freeTerminals = new ArrayDeque<>();
 	private Queue<Terminal> occupiedTerminals = new ArrayDeque<>();
@@ -67,16 +69,19 @@ public class LogisticsBaseSingleton {
 
 	public Terminal getFreeTerminal() {
 		Terminal terminal;
-		while (true) {
-			freeTerminalsLock.lock();
+		freeTerminalsLock.lock();
+		while (freeTerminals.isEmpty()) {
 			try {
-				if (!freeTerminals.isEmpty()) {
-					terminal = freeTerminals.poll();
-					break;
-				}
-			} finally {
-				freeTerminalsLock.unlock();
-			}
+				freeTerminalsCondition.await();
+			} catch (InterruptedException e) {
+				logger.log(Level.DEBUG, "Thread was interrupted: {}", e.getMessage());
+				Thread.currentThread().interrupt();
+			} 
+		}
+		try {
+			terminal = freeTerminals.poll();
+		} finally {
+			freeTerminalsLock.unlock();
 		}
 		occupiedTerminalsLock.lock();
 		try {
@@ -86,15 +91,7 @@ public class LogisticsBaseSingleton {
 		}
 		return terminal;
 	}
-
-	public int getMaxContainerCount() {
-		return maxContainerCount;
-	}
-
-	public int getTerminalCount() {
-		return terminalCount;
-	}
-
+	
 	public void releaseOccupiedTerminal(Terminal terminal) {
 		occupiedTerminalsLock.lock();
 		try {
@@ -105,9 +102,18 @@ public class LogisticsBaseSingleton {
 		try {
 			freeTerminalsLock.lock();
 			freeTerminals.add(terminal);
+			freeTerminalsCondition.signal();
 		} finally {
 			freeTerminalsLock.unlock();
 		}
+	}
+
+	public int getMaxContainerCount() {
+		return maxContainerCount;
+	}
+
+	public int getTerminalCount() {
+		return terminalCount;
 	}
 	
 }
